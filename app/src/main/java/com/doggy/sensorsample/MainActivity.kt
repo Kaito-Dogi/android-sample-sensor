@@ -43,6 +43,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         mMagneticFieldSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
     }
 
+    override fun onResume() {
+        super.onResume()
+        setSensorEventListener()
+    }
+
     // センサーの精度が変化した時の処理
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         /* 何もしない */
@@ -52,5 +57,24 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         // とりあえず値を出力してみる（後で消す）
         Log.d("SENSOR", event?.values?.getOrNull(0).toString())
+    }
+
+    private fun setSensorEventListener() {
+        // SensorManagerにリスナーをセットする
+        // リスナー：センサーの値が変化したときに何の処理をするかを定義したインスタンス
+        mAccelerometerSensor?.also { sensor: Sensor ->
+            sensorManager.registerListener(
+                this@MainActivity,
+                sensor,
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
+        }
+        mMagneticFieldSensor?.also { sensor: Sensor ->
+            sensorManager.registerListener(
+                this@MainActivity,
+                sensor,
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
+        }
     }
 }
