@@ -45,7 +45,16 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
+
+        // リスナーをセットする
         setSensorEventListener()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        // リスナーを解除する
+        sensorManager.unregisterListener(this@MainActivity)
     }
 
     // センサーの精度が変化した時の処理
