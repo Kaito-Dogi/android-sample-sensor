@@ -6,6 +6,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.doggy.sensorsample.databinding.ActivityMainBinding
 
@@ -65,6 +66,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null) {
             holdSensorEventValues(event)
+
+            // 地磁気センサーの値を取得できている場合のみ処理をする
+            if (mMagneticFiledFlg) Log.d("DEGREE", calculateDegree().toString())
         }
     }
 
@@ -102,5 +106,32 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 }
             }
         }
+    }
+
+    private fun calculateDegree(): Float {
+        // 方位を出すための変換行列
+        val rotate = FloatArray(16)
+        val inclination = FloatArray(16)
+
+        // 回転角
+        val orientation = FloatArray(3)
+
+        // 行列化
+        SensorManager.getRotationMatrix(
+            rotate,
+            inclination,
+            mAccelerometerValue,
+            mMagneticFieldValue
+        )
+
+        // 回転角を取得
+        SensorManager.getOrientation(
+            rotate,
+            orientation
+        )
+
+        // 角度を求める
+        val doubleOrientation = orientation[0].toDouble()
+        return Math.toDegrees(doubleOrientation).toFloat()
     }
 }
