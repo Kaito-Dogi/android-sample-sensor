@@ -6,7 +6,6 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.doggy.sensorsample.databinding.ActivityMainBinding
 
@@ -64,8 +63,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     // センサーの値が変化した時の処理
     override fun onSensorChanged(event: SensorEvent?) {
-        // とりあえず値を出力してみる（後で消す）
-        Log.d("SENSOR", event?.values?.getOrNull(0).toString())
+        if (event != null) {
+            holdSensorEventValues(event)
+        }
     }
 
     private fun setSensorEventListener() {
@@ -84,6 +84,23 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 sensor,
                 SensorManager.SENSOR_DELAY_NORMAL
             )
+        }
+    }
+
+    private fun holdSensorEventValues(event: SensorEvent) {
+        // 値が変わったセンサーの値を保存する
+        when (event.sensor.type) {
+            Sensor.TYPE_ACCELEROMETER -> {
+                if (event.values != null) {
+                    mAccelerometerValue = event.values
+                }
+            }
+            Sensor.TYPE_MAGNETIC_FIELD -> {
+                if (event.values != null) {
+                    mMagneticFieldValue = event.values
+                    mMagneticFiledFlg = true
+                }
+            }
         }
     }
 }
