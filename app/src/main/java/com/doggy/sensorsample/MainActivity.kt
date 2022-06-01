@@ -2,12 +2,15 @@ package com.doggy.sensorsample
 
 import android.content.Context
 import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.doggy.sensorsample.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -38,5 +41,16 @@ class MainActivity : AppCompatActivity() {
 
         // 地磁気センサーを取得する
         mMagneticFieldSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+    }
+
+    // センサーの精度が変化した時の処理
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        /* 何もしない */
+    }
+
+    // センサーの値が変化した時の処理
+    override fun onSensorChanged(event: SensorEvent?) {
+        // とりあえず値を出力してみる（後で消す）
+        Log.d("SENSOR", event?.values?.getOrNull(0).toString())
     }
 }
